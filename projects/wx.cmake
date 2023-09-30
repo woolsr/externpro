@@ -1,6 +1,6 @@
 # wx
 # xpbuild:msw_cmake-scratch,linux_configure-make
-set(VER 3.1.0)
+set(VER 3.2.2.1)
 xpProOption(wx DBG_MSVC)
 set(REPO https://github.com/wxWidgets/wxWidgets)
 set(FORK https://github.com/smanders/wxWidgets)
@@ -17,9 +17,7 @@ set(PRO_WX
   GIT_TAG xp${VER} # what to 'git checkout'
   GIT_REF v${VER}_220421 # patch from REF to TAG
   DLURL ${REPO}/releases/download/v${VER}/wxWidgets-${VER}.tar.bz2
-  DLMD5 e20c14bb9bf5d4ec0979a3cd7510dece
-  PATCH ${PATCH_DIR}/wx.patch
-  DIFF ${FORK}/compare/
+  DLMD5 45bd5f56a06e7c4ca7caf6c0b4d5d506
   DEPS_FUNC build_wx
   DEPS_VARS WX_INCDIR WX_SRCDIR
   SUBPRO wxcmake

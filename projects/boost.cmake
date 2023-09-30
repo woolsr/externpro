@@ -1,7 +1,7 @@
 # boost
 # xpbuild:b2
-set(VER 1.76.0)
-string(REPLACE "." "_" VER_ ${VER}) # 1_76_0
+set(VER 1.83.0)
+string(REPLACE "." "_" VER_ ${VER}) # 1_83_0
 xpProOption(boost DBG)
 set(REPO https://github.com/boostorg/boost)
 set(PRO_BOOST
@@ -16,9 +16,10 @@ set(PRO_BOOST
   GIT_ORIGIN ${REPO}
   GIT_TAG boost-${VER} # what to 'git checkout'
   DLURL https://boostorg.jfrog.io/artifactory/main/release/${VER}/source/boost_${VER_}.tar.bz2
-  DLMD5 33334dd7f862e8ac9fe1cc7c6584fb6d
+  DLMD5 406f0b870182b4eb17a23a9d8fce967d
   DEPS_FUNC build_boost
-  SUBPRO boostbeast boostdll boostgil boostgraph boostinstall boostinterprocess boostprogram_options boostprogram_optionshpp boostregex boostunits
+  SUBPRO boostinstall
+#  SUBPRO boostbeast boostdll boostgil boostinstall boostinterprocess boostprogram_options boostprogram_optionshpp boostunits #boostgraph boostregex
   )
 function(build_boost)
   if(NOT (XP_DEFAULT OR XP_PRO_BOOST))
@@ -163,7 +164,9 @@ function(userConfigJam jamFile)
       message(STATUS "PYTHON_INCLUDE_DIRS: ${PYTHON_INCLUDE_DIRS}")
       message(STATUS "PYTHON_LIBRARIES: ${PYTHON_LIBRARIES}")
     endif()
+    Message(STATUS "Python Libs: ${PYTHON_LIBRARIES}")
     get_filename_component(PYTHON_LIB_DIR ${PYTHON_LIBRARIES} DIRECTORY)
+    Message(STATUS "Dir: ${PYTHON_LIB_DIR}; Python Libs: ${PYTHON_LIBRARIES}")
     file(APPEND ${cfgFile}
       "using python\n"
       "  : ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}\n"
@@ -270,6 +273,7 @@ function(addproject_boost XP_TARGET)
       # if we build boost (on MSW) within source tree, the errors don't happen
     endif()
     userConfigJam(USER_CONFIG_JAM_FILE)
+    cmake_print_variables(USER_CONFIG_JAM_FILE)
     set(boost_STAGE stage --stagedir=${baseDir}/Build/${XP_TARGET}/stage)
     ExternalProject_Get_Property(${bl_PRO} SOURCE_DIR)
     ExternalProject_Add(${XP_TARGET} DEPENDS ${${bl_PRO}_DEPENDS}
