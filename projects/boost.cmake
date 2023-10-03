@@ -155,24 +155,26 @@ function(userConfigJam jamFile)
     "using bzip2 : ${bzip2Ver} : <search>${STAGE_DIR}/lib <name>${bzip2Name} <include>${bzip2Inc} ;\n"
     )
   # Boost.Python build
-  find_package(PythonInterp)
-  find_package(PythonLibs)
-  if(PYTHONINTERP_FOUND AND PYTHONLIBS_FOUND)
+  # find_package(PythonInterp)
+  # find_package(PythonLibs)
+  find_package(Python3 COMPONENTS Interpreter Development)
+  # find_package(pybind11 CONFIG)
+  if(Python3_Interpreter_FOUND AND Python3_FOUND)
     if(XP_BUILD_VERBOSE)
-      message(STATUS "PYTHON_EXECUTABLE: ${PYTHON_EXECUTABLE}")
-      message(STATUS "PYTHON_VERSION_STRING: ${PYTHON_VERSION_STRING}")
-      message(STATUS "PYTHON_INCLUDE_DIRS: ${PYTHON_INCLUDE_DIRS}")
-      message(STATUS "PYTHON_LIBRARIES: ${PYTHON_LIBRARIES}")
+      message(STATUS "Python3_EXECUTABLE: ${Python3_EXECUTABLE}")
+      message(STATUS "Python3_VERSION: ${Python3_VERSION}")
+      message(STATUS "Python3_INCLUDE_DIRS: ${Python3_INCLUDE_DIRS}")
+      message(STATUS "Python3_LIBRARIES: ${Python3_LIBRARIES}")
     endif()
-    Message(STATUS "Python Libs: ${PYTHON_LIBRARIES}")
-    get_filename_component(PYTHON_LIB_DIR ${PYTHON_LIBRARIES} DIRECTORY)
-    Message(STATUS "Dir: ${PYTHON_LIB_DIR}; Python Libs: ${PYTHON_LIBRARIES}")
+    Message(STATUS "Python Libs: ${Python3_LIBRARIES}")
+    # get_filename_component(PYTHON_LIB_DIR ${Python3_LIBRARIES} DIRECTORY)
+    Message(STATUS "Dir: ${Python3_LIBRARY_DIRS}; Python Libs: ${Python3_LIBRARIES}")
     file(APPEND ${cfgFile}
       "using python\n"
-      "  : ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}\n"
-      "  : \"${PYTHON_EXECUTABLE}\"\n"
-      "  : \"${PYTHON_INCLUDE_DIRS}\"\n"
-      "  : \"${PYTHON_LIB_DIR}\"\n"
+      "  : ${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}\n"
+      "  : \"${Python3_EXECUTABLE}\"\n"
+      "  : \"${Python3_INCLUDE_DIRS}\"\n"
+      "  : \"${Python3_LIBRARY_DIRS}\"\n"
       "  : <python-debugging>off ;"
       )
   else()
@@ -273,7 +275,6 @@ function(addproject_boost XP_TARGET)
       # if we build boost (on MSW) within source tree, the errors don't happen
     endif()
     userConfigJam(USER_CONFIG_JAM_FILE)
-    cmake_print_variables(USER_CONFIG_JAM_FILE)
     set(boost_STAGE stage --stagedir=${baseDir}/Build/${XP_TARGET}/stage)
     ExternalProject_Get_Property(${bl_PRO} SOURCE_DIR)
     ExternalProject_Add(${XP_TARGET} DEPENDS ${${bl_PRO}_DEPENDS}
